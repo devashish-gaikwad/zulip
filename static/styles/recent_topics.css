@@ -72,6 +72,10 @@
         .table_fix_head table {
             /* To keep border properties to the thead th. */
             border-collapse: separate;
+            /* 440px = The amount of margin it takes to keep last topic row
+             * above maximum height of compose box.
+             */
+            margin-bottom: 440px;
         }
 
         #recent_topics_filter_buttons {

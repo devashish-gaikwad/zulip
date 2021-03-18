@@ -778,13 +778,6 @@ export function process_hotkey(e, hotkey) {
             return true;
     }
 
-    // We don't want hotkeys below this to work when recent topics is
-    // open. These involve compose box hotkeys and hotkeys that can only
-    // be done performed on a message.
-    if (recent_topics.is_visible()) {
-        return false;
-    }
-
     // Shortcuts that are useful with an empty message feed, like opening compose.
     switch (event_name) {
         case "compose": // 'c': compose
@@ -796,17 +789,19 @@ export function process_hotkey(e, hotkey) {
         case "open_drafts":
             drafts.launch();
             return true;
-        case "reply_message": // 'r': respond to message
-            // Note that you can "Enter" to respond to messages as well,
-            // but that is handled in process_enter_key().
-            compose_actions.respond_to_message({trigger: "hotkey"});
-            return true;
         case "C_deprecated":
             ui.maybe_show_deprecation_notice("C");
             return true;
         case "star_deprecated":
             ui.maybe_show_deprecation_notice("*");
             return true;
+    }
+
+    // We don't want hotkeys below this to work when recent topics is
+    // open. These involve hotkeys that can only
+    // be performed on a message.
+    if (recent_topics.is_visible()) {
+        return false;
     }
 
     if (message_lists.current.empty()) {
@@ -849,6 +844,11 @@ export function process_hotkey(e, hotkey) {
     const msg = message_lists.current.selected_message();
     // Shortcuts that operate on a message
     switch (event_name) {
+        case "reply_message": // 'r': respond to message
+            // Note that you can "Enter" to respond to messages as well,
+            // but that is handled in process_enter_key().
+            compose_actions.respond_to_message({trigger: "hotkey"});
+            return true;
         case "message_actions":
             return popovers.open_message_menu(msg);
         case "star_message":

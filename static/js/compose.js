@@ -200,6 +200,15 @@ export function update_closed_compose_buttons_for_stream() {
     update_conversation_button(text_conversation, title_conversation);
 }
 
+export function update_closed_compose_buttons_for_recent_topics() {
+    update_closed_compose_buttons_for_private();
+    // Hide reply button since there is no message
+    // in recent topics to reply to.
+    // TODO: Allow user to reply to currently
+    // focused topic / stream in the topics table.
+    $("#left_bar_compose_reply_button_big").hide();
+}
+
 function update_fade() {
     if (!compose_state.composing()) {
         return;

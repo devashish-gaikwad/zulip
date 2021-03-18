@@ -19,10 +19,10 @@ import * as narrow_state from "./narrow_state";
 import * as notifications from "./notifications";
 import {page_params} from "./page_params";
 import * as people from "./people";
+import * as recent_topics from "./recent_topics";
 import * as reload_state from "./reload_state";
 import * as stream_bar from "./stream_bar";
 import * as stream_data from "./stream_data";
-import * as ui_util from "./ui_util";
 import * as unread_ops from "./unread_ops";
 
 export function blur_compose_inputs() {
@@ -132,7 +132,6 @@ export function complete_starting_tasks(msg_type, opts) {
     // makes testing a bit easier.
 
     maybe_scroll_up_selected_message();
-    ui_util.change_tab_to("#message_feed_container");
     compose_fade.start_compose(msg_type);
     stream_bar.decorate(opts.stream, $("#stream-message .message_header_stream"), true);
     $(document).trigger(new $.Event("compose_started.zulip", opts));
@@ -173,6 +172,10 @@ function fill_in_opts_from_current_narrowed_view(msg_type, opts) {
 
         // Set default parameters based on the current narrowed view.
         ...narrow_state.set_compose_defaults(),
+
+        // Set default parameters based on the focused row in
+        // recent topics.
+        ...recent_topics.set_compose_defaults(),
 
         ...opts,
     };
