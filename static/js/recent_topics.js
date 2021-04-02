@@ -117,9 +117,18 @@ function set_table_focus(row, col) {
     }
 
     // Setting focus after the render is complete doesn't partially hide the row from view.
-    setTimeout(() => {
-        topic_rows.eq(row).find(".recent_topics_focusable").eq(col).children().trigger("focus");
-    }, 0);
+    const topic_row = topic_rows.eq(row);
+    topic_row.find(".recent_topics_focusable").eq(col).children().trigger("focus");
+
+    // Scroll the topic row in the middle
+    // NOTE: Although, according to
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView#browser_compatibility
+    // `scrollIntoView` is not fully supported on Safari,
+    // it works as intended on Safari v14.0.3 on macOS Big Sur.
+    topic_row.get()[0].scrollIntoView({
+        block: "center",
+    });
+
     current_focus_elem = "table";
     return true;
 }
@@ -528,6 +537,11 @@ export function complete_rerender() {
         html_selector: get_topic_row,
         simplebar_container: $("#recent_topics_table .table_fix_head"),
         callback_after_render: revive_current_focus,
+        is_scroll_position_for_render: (scroll_container) =>
+            // 440 = bottom margin of `table`
+            // 50 = ~ height of a table row.
+            scroll_container.scrollTop + scroll_container.clientHeight + 440 + 50 >
+            scroll_container.scrollHeight,
     });
 }
 

@@ -278,7 +278,20 @@ export function create($container, list, opts) {
         // on scroll of the nearest scrolling container, if it hits the bottom
         // of the container then fetch a new block of items and render them.
         meta.scroll_container.on("scroll.list_widget_container", function () {
-            if (this.scrollHeight - (this.scrollTop + this.clientHeight) < 10) {
+            function is_scroll_position_for_render(scroll_container) {
+                return (
+                    scroll_container.scrollHeight -
+                        (scroll_container.scrollTop + scroll_container.clientHeight) <
+                    10
+                );
+            }
+
+            let should_render = is_scroll_position_for_render(this);
+            if (opts.is_scroll_position_for_render !== undefined) {
+                should_render = opts.is_scroll_position_for_render(this);
+            }
+
+            if (should_render) {
                 widget.render();
             }
         });
